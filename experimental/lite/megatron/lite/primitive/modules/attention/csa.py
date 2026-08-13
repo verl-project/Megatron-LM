@@ -8,11 +8,11 @@ import transformer_engine.pytorch as te
 # Zero-copy imports of the DSv4 THD-CP helpers that live in Megatron Core. The
 # lite CSA module reuses Core's differentiable kernels, CP row-mapping utilities,
 # and CuTeDSL layout kernels rather than vendoring them; see the module docstring
-# of ``csa_cp_utils`` / ``csa_cp_layout_kernels`` for the exact contracts.
+# of ``cp_utils`` / ``cp_layout_kernels`` for the exact contracts.
 from megatron.core.tensor_parallel.mappings import gather_from_sequence_parallel_region
-from megatron.core.transformer.experimental_attention_variant import (
-    csa_cp_layout_kernels,
-    csa_cp_utils as cp_utils,
+from megatron.core.transformer.experimental_attention_variant.csa_utils import (
+    cp_layout_kernels,
+    cp_utils,
 )
 from megatron.core.transformer.experimental_attention_variant.csa import (
     _unfused_indexer_sparse_attn_from_topk,
@@ -969,7 +969,7 @@ class CompressedSparseAttention(nn.Module):
             else (max_seqlen_q // ratio if ratio > 1 else 0)
         )
         topk_idxs, topk_length, indexer_topk_rank_major = (
-            csa_cp_layout_kernels.build_attention_indices(
+            cp_layout_kernels.build_attention_indices(
                 cu_seqlens,
                 global_start,
                 l_local,
